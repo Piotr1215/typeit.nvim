@@ -1,6 +1,6 @@
-# TypeIt.nvim
+# typeit.nvim
 
-TypeIt.nvim is a Neovim plugin that simulates typing in real-time. It's perfect for creating engaging demos, tutorials, or presentations where you want to showcase code or text being typed out dynamically.
+typeit.nvim is a Neovim plugin that simulates typing in real-time. It's perfect for creating engaging demos, tutorials, or presentations where you want to showcase code or text being typed out dynamically.
 
 ## Features
 
@@ -52,82 +52,117 @@ require('typeit').setup({
 
 ### Vim Commands
 
-typeit.nvim provides the following commands:
+typeit.nvim provides the following commands that should be used in an empty buffer. The typing simulation always starts from the beginning of the current buffer.
 
 - `:SimulateTyping [file_path] [speed]`: Simulate typing from a file
 - `:SimulateTypingWithPauses [file_path] [speed] [pause_at]`: Simulate typing with pauses ('line' or 'paragraph')
 - `:StopTyping`: Stop the current typing simulation
 
-Examples:
+#### Simulating typing from a file
+
+To simulate typing the contents of a file:
+
+1. Open a new empty buffer: `:enew`
+2. Use the `SimulateTyping` command:
 
 ```vim
 :SimulateTyping ~/example.txt 30
+```
+
+This will simulate typing the contents of `example.txt` at a speed of 30 milliseconds per character.
+
+#### Simulating typing with pauses
+
+To simulate typing with pauses between lines or paragraphs:
+
+1. Open a new empty buffer: `:enew`
+2. Use the `SimulateTypingWithPauses` command:
+
+```vim
 :SimulateTypingWithPauses ~/example.txt 50 line
+```
+
+This will simulate typing the contents of `example.txt` at a speed of 50 milliseconds per character, pausing after each line.
+
+For paragraph pauses:
+
+```vim
 :SimulateTypingWithPauses ~/example.txt 50 paragraph
+```
+
+This will pause after each paragraph instead of each line.
+
+#### Simulating typing of custom text
+
+You can also simulate typing of custom text directly in Neovim:
+
+1. Open a new empty buffer: `:enew`
+2. Enter command mode and type your text in quotes:
+
+```vim
+:call luaeval("require('typeit').simulate_typing(_A[1], _A[2])", ["This is a custom text being typed out.", 40])
+```
+
+This will simulate typing "This is a custom text being typed out." at a speed of 40 milliseconds per character.
+
+For custom text with pauses:
+
+```vim
+:call luaeval("require('typeit').simulate_typing_with_pauses(_A[1], _A[2], _A[3])", ["Line 1\nLine 2\nLine 3", "line", 30])
+```
+
+This will simulate typing the given lines with pauses after each line, at a speed of 30 milliseconds per character.
+
+#### Stopping the simulation
+
+To stop the typing simulation at any point:
+
+```vim
 :StopTyping
 ```
 
-### Lua API
+Remember, you can always use `Ctrl+C` to interrupt the typing simulation as well.
 
-You can also use typeit.nvim's functions directly in Lua:
-
-```lua
-local typeit = require('typeit')
-
--- Simulate typing from a file
-typeit.start_typing_simulation_from_file('~/example.txt', 50)
-
--- Simulate typing a string
-typeit.simulate_typing("Hello, World!", 30)
-
--- Simulate typing with line pauses
-typeit.simulate_typing_with_pauses("Line 1\nLine 2\nLine 3", 'line', 50)
-
--- Simulate typing with paragraph pauses
-typeit.simulate_typing_with_pauses("Paragraph 1\n\nParagraph 2", 'paragraph', 50)
-
--- Stop typing simulation
-typeit.stop_typing_simulation()
-```
+These commands give you flexibility to simulate typing from files or custom text, with or without pauses, directly from Vim command mode.
 
 ## Advanced Usage
 
 ### Custom Keybindings
 
-You can set up custom keybindings for TypeIt.nvim commands:
+You can set up custom keybindings for typeit.nvim commands:
 
 ```lua
 vim.api.nvim_set_keymap('n', '<leader>st', ':SimulateTyping<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>sp', ':SimulateTypingWithPauses<CR>', { noremap = true, silent = true })
 ```
 
-### Integration with Other Plugins
+## Development
 
-TypeIt.nvim can be easily integrated with other plugins. For example, you could use it with a presentation plugin to create interactive coding demonstrations:
+To load the plugin from a local environment for development, add this to your `init.lua`:
 
 ```lua
--- Example integration (pseudo-code)
-presentation.on_slide_change(function(slide)
-    if slide.has_code_demo then
-        typeit.start_typing_simulation_from_file(slide.code_file, 30)
-    end
-end)
+vim.opt.runtimepath:prepend("/path/to/your/typeit.nvim")
 ```
+
+## Testing
+
+typeit.nvim uses the `vusted` framework for testing. To run the tests:
+
+1. Install `vusted` if you haven't already:
+   ```
+   luarocks install vusted
+   ```
+
+2. Navigate to the plugin directory and run:
+   ```
+   vusted test
+   ```
+
+The tests cover various aspects of the plugin, including typing simulation, pausing behavior, and file operations. They ensure that the plugin functions correctly in different scenarios.
 
 ## Contributing
 
-Contributions to TypeIt.nvim are welcome! Please feel free to submit a Pull Request.
-
-### Development Setup
-
-1. Fork the repository
-2. Clone your fork: `git clone https://github.com/your-username/typeit.nvim.git`
-3. Create a new branch: `git checkout -b my-new-feature`
-4. Make your changes
-5. Run the tests: `vusted test`
-6. Commit your changes: `git commit -am 'Add some feature'`
-7. Push to the branch: `git push origin my-new-feature`
-8. Submit a pull request
+Contributions to typeit.nvim are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
