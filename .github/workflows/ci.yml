@@ -1,6 +1,8 @@
 name: Ci
 
 on: [push]
+permissions:
+  contents: write
 
 jobs:
   lint:
@@ -61,4 +63,3 @@ jobs:
           luarocks install luacheck
           luarocks install vusted
           vusted ./test
-d ./test
