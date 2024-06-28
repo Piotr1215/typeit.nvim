@@ -63,11 +63,18 @@ end
 
 function M.simulate_typing(text, speed)
   speed = speed or config.default_speed
-  for i = 1, #text do
-    type_char(text:sub(i, i))
-    if not vim.g.typeit_testing then
-      vim.cmd('sleep ' .. speed .. 'm')
+  local ok, err = pcall(function()
+    for i = 1, #text do
+      type_char(text:sub(i, i))
+      if not vim.g.typeit_testing then
+        vim.cmd('sleep ' .. speed .. 'm')
+      end
     end
+  end)
+  if not ok and err:match('Keyboard interrupt') then
+    print('Typing simulation interrupted.')
+  elseif not ok then
+    error(err) -- Re-raise other errors
   end
 end
 
@@ -76,17 +83,25 @@ function M.simulate_typing_with_pauses(text, pause_at, speed)
   pause_at = pause_at or config.default_pause
   local lines = vim.split(text, '\n', { plain = true })
 
-  for i, line in ipairs(lines) do
-    M.simulate_typing(line, speed)
-    vim.api.nvim_command('normal! o')
+  local ok, err = pcall(function()
+    for i, line in ipairs(lines) do
+      M.simulate_typing(line, speed)
+      vim.api.nvim_command('normal! o')
 
-    local should_pause = pause_at == 'line' or (pause_at == 'paragraph' and (line == '' or i == 1))
+      local should_pause = pause_at == 'line'
+        or (pause_at == 'paragraph' and (line == '' or i == 1))
 
-    if should_pause and not vim.g.typeit_testing then
-      vim.cmd("echo 'Press Enter to continue...'")
-      vim.fn.getchar()
-      vim.cmd("echo ''")
+      if should_pause and not vim.g.typeit_testing then
+        vim.cmd("echo 'Press Enter to continue...'")
+        vim.fn.getchar()
+        vim.cmd("echo ''")
+      end
     end
+  end)
+  if not ok and err:match('Keyboard interrupt') then
+    print('Typing simulation interrupted.')
+  elseif not ok then
+    error(err) -- Re-raise other errors
   end
 end
 
