@@ -1,66 +1,172 @@
-*nvim-plugin-template.txt*      For NVIM v0.8.0      Last change: 2024 June 08
+*typeit.nvim.txt*           For NVIM v0.8.0          Last change: 2024 June 28
 
 ==============================================================================
-Table of Contents                     *nvim-plugin-template-table-of-contents*
+Table of Contents                              *typeit.nvim-table-of-contents*
 
-1. nvim-plugin-template            |nvim-plugin-template-nvim-plugin-template|
-  - Usage                    |nvim-plugin-template-nvim-plugin-template-usage|
-  - Format                  |nvim-plugin-template-nvim-plugin-template-format|
-  - Test                      |nvim-plugin-template-nvim-plugin-template-test|
-  - CI                          |nvim-plugin-template-nvim-plugin-template-ci|
-  - More                      |nvim-plugin-template-nvim-plugin-template-more|
-  - License MIT        |nvim-plugin-template-nvim-plugin-template-license-mit|
+1. TypeIt.nvim                                       |typeit.nvim-typeit.nvim|
+  - Features                                |typeit.nvim-typeit.nvim-features|
+  - Installation                        |typeit.nvim-typeit.nvim-installation|
+  - Configuration                      |typeit.nvim-typeit.nvim-configuration|
+  - Usage                                      |typeit.nvim-typeit.nvim-usage|
+  - Advanced Usage                    |typeit.nvim-typeit.nvim-advanced-usage|
+  - Contributing                        |typeit.nvim-typeit.nvim-contributing|
+  - License                                  |typeit.nvim-typeit.nvim-license|
 
 ==============================================================================
-1. nvim-plugin-template            *nvim-plugin-template-nvim-plugin-template*
+1. TypeIt.nvim                                       *typeit.nvim-typeit.nvim*
 
-Neovim plugin template; includes automatic documentation generation from
-README, integration tests with Busted, and linting with Stylua
-
-
-USAGE                        *nvim-plugin-template-nvim-plugin-template-usage*
-
-1. Click `use this template` button generate a repo on your github.
-2. Clone your plugin repo. Open terminal then cd plugin directory.
-3. Run `python3 rename.py your-plugin-name`. This will replace all `nvim-plugin-template` to your `plugin-name`.
-Then it will prompt you input `y` or `n` to remove example codes in `init.lua` and
-`test/plugin_spec.lua`. If you are familiar this repo just input `y`. If you are looking at this template for the first time I suggest you inspect the contents. After this step `rename.py` will also auto-remove.
-
-Now you have a clean plugin environment. Enjoy!
+TypeIt.nvim is a Neovim plugin that simulates typing in real-time. It’s
+perfect for creating engaging demos, tutorials, or presentations where you want
+to showcase code or text being typed out dynamically.
 
 
-FORMAT                      *nvim-plugin-template-nvim-plugin-template-format*
+FEATURES                                    *typeit.nvim-typeit.nvim-features*
 
-The CI uses `stylua` to format the code; customize the formatting by editing
-`.stylua.toml`.
-
-
-TEST                          *nvim-plugin-template-nvim-plugin-template-test*
-
-Uses busted <https://lunarmodules.github.io/busted/> for testing. Installs by
-using `luarocks --lua-version=5.1 install vusted` then runs `vusted ./test` for
-your test cases. `vusted` is a wrapper of Busted especially for testing Neovim
-plugins.
-
-Create test cases in the `test` folder. Busted expects files in this directory
-to be named `foo_spec.lua`, with `_spec` as a suffix before the `.lua` file
-extension. For more usage details please check busted usage
-<https://lunarmodules.github.io/busted/>
+- Simulate typing from files or strings
+- Customizable typing speed
+- Configurable pauses (line-by-line or paragraph)
+- Filetype detection for syntax highlighting
+- Easy to use Lua API and Vim commands
 
 
-CI                              *nvim-plugin-template-nvim-plugin-template-ci*
-
-- Auto generates doc from README.
-- Runs the Busted/vusted integration tests
-- Lints with `stylua`.
+INSTALLATION                            *typeit.nvim-typeit.nvim-installation*
 
 
-MORE                          *nvim-plugin-template-nvim-plugin-template-more*
+USING VIM-PLUG ~
 
-To see this template in action, take a look at my other plugins.
+>vim
+    Plug 'Piotr1215/typeit.nvim'
+<
 
 
-LICENSE MIT            *nvim-plugin-template-nvim-plugin-template-license-mit*
+USING PACKER.NVIM ~
+
+>lua
+    use 'Piotr1215/typeit.nvim'
+<
+
+
+USING LAZY.NVIM ~
+
+>lua
+    {
+        'Piotr1215/typeit.nvim',
+        config = function()
+            require('typeit').setup({
+                -- Your configuration here
+            })
+        end
+    }
+<
+
+
+CONFIGURATION                          *typeit.nvim-typeit.nvim-configuration*
+
+You can configure TypeIt.nvim globally using the `setup` function:
+
+>lua
+    require('typeit').setup({
+        default_speed = 30,    -- Default typing speed (milliseconds)
+        default_pause = 'line' -- Default pause behavior ('line' or 'paragraph')
+    })
+<
+
+
+USAGE                                          *typeit.nvim-typeit.nvim-usage*
+
+
+VIM COMMANDS ~
+
+TypeIt.nvim provides the following commands:
+
+- `:SimulateTyping [file_path] [speed]`: Simulate typing from a file
+- `:SimulateTypingWithPauses [file_path] [speed] [pause_at]`: Simulate typing with pauses
+- `:SimulateTypingWithParagraphPauses [file_path] [speed]`: Simulate typing with paragraph pauses
+- `:StopTyping`: Stop the current typing simulation
+
+Examples:
+
+>vim
+    :SimulateTyping ~/example.txt 30
+    :SimulateTypingWithPauses ~/example.txt 50 line
+    :StopTyping
+<
+
+
+LUA API ~
+
+You can also use TypeIt.nvim’s functions directly in Lua:
+
+>lua
+    local typeit = require('typeit')
+    
+    -- Simulate typing from a file
+    typeit.start_typing_simulation_from_file('~/example.txt', 50)
+    
+    -- Simulate typing a string
+    typeit.simulate_typing("Hello, World!", 30)
+    
+    -- Simulate typing with line pauses
+    typeit.simulate_typing_with_pauses("Line 1\nLine 2\nLine 3", 'line', 50)
+    
+    -- Simulate typing with paragraph pauses
+    typeit.simulate_typing_with_pauses("Paragraph 1\n\nParagraph 2", 'paragraph', 50)
+    
+    -- Stop typing simulation
+    typeit.stop_typing_simulation()
+<
+
+
+ADVANCED USAGE                        *typeit.nvim-typeit.nvim-advanced-usage*
+
+
+CUSTOM KEYBINDINGS ~
+
+You can set up custom keybindings for TypeIt.nvim commands:
+
+>lua
+    vim.api.nvim_set_keymap('n', '<leader>st', ':SimulateTyping<CR>', { noremap = true, silent = true })
+    vim.api.nvim_set_keymap('n', '<leader>sp', ':SimulateTypingWithPauses<CR>', { noremap = true, silent = true })
+<
+
+
+INTEGRATION WITH OTHER PLUGINS ~
+
+TypeIt.nvim can be easily integrated with other plugins. For example, you could
+use it with a presentation plugin to create interactive coding demonstrations:
+
+>lua
+    -- Example integration (pseudo-code)
+    presentation.on_slide_change(function(slide)
+        if slide.has_code_demo then
+            typeit.start_typing_simulation_from_file(slide.code_file, 30)
+        end
+    end)
+<
+
+
+CONTRIBUTING                            *typeit.nvim-typeit.nvim-contributing*
+
+Contributions to TypeIt.nvim are welcome! Please feel free to submit a Pull
+Request.
+
+
+DEVELOPMENT SETUP ~
+
+1. Fork the repository
+2. Clone your fork: `git clone https://github.com/your-username/typeit.nvim.git`
+3. Create a new branch: `git checkout -b my-new-feature`
+4. Make your changes
+5. Run the tests: `vusted test`
+6. Commit your changes: `git commit -am 'Add some feature'`
+7. Push to the branch: `git push origin my-new-feature`
+8. Submit a pull request
+
+
+LICENSE                                      *typeit.nvim-typeit.nvim-license*
+
+This project is licensed under the MIT License - see the LICENSE <LICENSE> file
+for details.
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
