@@ -15,20 +15,20 @@ TypeIt.nvim is a Neovim plugin that simulates typing in real-time. It's perfect 
 ### Using [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
-Plug 'YourGitHubUsername/typeit.nvim'
+Plug 'Piotr1215/typeit.nvim'
 ```
 
 ### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
-use 'YourGitHubUsername/typeit.nvim'
+use 'Piotr1215/typeit.nvim'
 ```
 
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
 {
-    'YourGitHubUsername/typeit.nvim',
+    'Piotr1215/typeit.nvim',
     config = function()
         require('typeit').setup({
             -- Your configuration here
