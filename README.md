@@ -39,7 +39,7 @@ use 'Piotr1215/typeit.nvim'
 
 ## Configuration
 
-You can configure TypeIt.nvim globally using the `setup` function:
+You can configure typeit.nvim globally using the `setup` function:
 
 ```lua
 require('typeit').setup({
@@ -52,23 +52,24 @@ require('typeit').setup({
 
 ### Vim Commands
 
-TypeIt.nvim provides the following commands:
+typeit.nvim provides the following commands:
 
 - `:SimulateTyping [file_path] [speed]`: Simulate typing from a file
-- `:SimulateTypingWithPauses [file_path] [speed] [pause_at]`: Simulate typing with pauses
-- `:SimulateTypingWithParagraphPauses [file_path] [speed]`: Simulate typing with paragraph pauses
+- `:SimulateTypingWithPauses [file_path] [speed] [pause_at]`: Simulate typing with pauses ('line' or 'paragraph')
 - `:StopTyping`: Stop the current typing simulation
 
 Examples:
+
 ```vim
 :SimulateTyping ~/example.txt 30
 :SimulateTypingWithPauses ~/example.txt 50 line
+:SimulateTypingWithPauses ~/example.txt 50 paragraph
 :StopTyping
 ```
 
 ### Lua API
 
-You can also use TypeIt.nvim's functions directly in Lua:
+You can also use typeit.nvim's functions directly in Lua:
 
 ```lua
 local typeit = require('typeit')
