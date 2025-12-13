@@ -7,6 +7,7 @@ typeit.nvim is a Neovim plugin that simulates typing in real-time. It's perfect 
 - Simulate typing from files or strings
 - Customizable typing speed
 - Configurable pauses (line-by-line or paragraph)
+- Smart scroll positioning for video/demo recording
 - Filetype detection for syntax highlighting
 - Easy to use Lua API and Vim commands
 
@@ -43,8 +44,10 @@ You can configure typeit.nvim globally using the `setup` function:
 
 ```lua
 require('typeit').setup({
-    default_speed = 30,    -- Default typing speed (milliseconds)
-    default_pause = 'line' -- Default pause behavior ('line' or 'paragraph')
+    default_speed = 30,     -- Default typing speed (milliseconds)
+    default_pause = 'line', -- Default pause behavior ('line' or 'paragraph')
+    scroll_position = 30    -- Screen position for typing (percentage from bottom, default: 30)
+                           -- Makes typing visible in middle area - perfect for demos/videos
 })
 ```
 
@@ -122,6 +125,26 @@ To stop the typing simulation at any point:
 ```
 
 Remember, you can always use `Ctrl+C` to interrupt the typing simulation as well.
+
+#### Skipping ahead (SimulateTypingWithPauses only)
+
+When using `SimulateTypingWithPauses`, you can press `Enter` during typing to skip ahead to the next pause point:
+
+**In 'line' mode**:
+- Skips to the end of the current non-empty line
+- Example: If typing "Line 1", pressing Enter completes "Line 1" and pauses
+
+**In 'paragraph' mode**:
+- Skips to the end of the current paragraph (until the next empty line)
+- Example: If typing "Para 1 line 1", pressing Enter completes all lines until the next empty line, then pauses
+
+All skipped content is displayed instantly in the buffer.
+
+**Note**:
+- The skip feature only works with `SimulateTypingWithPauses` command
+- `SimulateTyping` types continuously without pauses or skip functionality
+- Empty lines are always typed instantly (no character-by-character animation)
+- Pressing `Ctrl+C` will cleanly exit the typing simulation
 
 These commands give you flexibility to simulate typing from files or custom text, with or without pauses, directly from Vim command mode.
 

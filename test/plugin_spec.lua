@@ -28,6 +28,14 @@ describe('TypeIt Plugin', function()
       local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
       assert.are.same({ test_text }, lines)
     end)
+
+    it('should accept scroll_position configuration', function()
+      typeit.setup({ scroll_position = 40 })
+      local test_text = 'Testing scroll position.'
+      typeit.simulate_typing(test_text, 1)
+      local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+      assert.are.same({ test_text }, lines)
+    end)
   end)
 
   describe('Typing simulation', function()
@@ -42,14 +50,21 @@ describe('TypeIt Plugin', function()
       local test_text = 'Line 1\nLine 2\nLine 3'
       typeit.simulate_typing_with_pauses(test_text, 'line', 1)
       local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-      assert.are.same({ 'Line 1', 'Line 2', 'Line 3', '' }, lines)
+      assert.are.same({ 'Line 1', 'Line 2', 'Line 3' }, lines)
     end)
 
     it('should simulate typing with paragraph pauses', function()
       local test_text = 'Paragraph 1\n\nParagraph 2\n\nParagraph 3'
       typeit.simulate_typing_with_pauses(test_text, 'paragraph', 1)
       local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-      assert.are.same({ 'Paragraph 1', '', 'Paragraph 2', '', 'Paragraph 3', '' }, lines)
+      assert.are.same({ 'Paragraph 1', '', 'Paragraph 2', '', 'Paragraph 3' }, lines)
+    end)
+
+    it('should handle empty lines instantly', function()
+      local test_text = 'Line 1\n\nLine 2'
+      typeit.simulate_typing_with_pauses(test_text, 'line', 1)
+      local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+      assert.are.same({ 'Line 1', '', 'Line 2' }, lines)
     end)
   end)
 
